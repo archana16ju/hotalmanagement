@@ -7,6 +7,12 @@ import sharp from 'sharp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import Orders from './collections/Order'
+import { Categories } from './collections/categories'
+import CompanyProfile from './collections/CompanyProfile'
+import { QrSettings } from './collections/QrSettings'
+import { Tables } from './collections/Tables'
+import { Products } from './collections/products'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -18,7 +24,16 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media],
+  collections: [
+    Users, 
+    Media,
+    Orders,
+    Categories,
+    CompanyProfile,
+    QrSettings,
+    Tables,
+    Products
+  ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

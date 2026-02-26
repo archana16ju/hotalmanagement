@@ -69,6 +69,12 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    orders: Order;
+    categories: Category;
+    'company-profile': CompanyProfile;
+    'qr-settings': QrSetting;
+    tables: Table;
+    products: Product;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +84,12 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    orders: OrdersSelect<false> | OrdersSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    'company-profile': CompanyProfileSelect<false> | CompanyProfileSelect<true>;
+    'qr-settings': QrSettingsSelect<false> | QrSettingsSelect<true>;
+    tables: TablesSelect<false> | TablesSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -160,6 +172,147 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders".
+ */
+export interface Order {
+  id: string;
+  products?:
+    | {
+        product: string | Product;
+        priceAtOrder?: number | null;
+        quantity?: number | null;
+        subtotal?: number | null;
+        kitchenStatus?: ('ordered' | 'prepared' | 'delivered' | 'cancelled') | null;
+        id?: string | null;
+      }[]
+    | null;
+  kotNumber: number;
+  tableNumber?: number | null;
+  invoiceNumber?: string | null;
+  totalAmount?: number | null;
+  billingStatus?: ('pending' | 'completed' | 'cancelled') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: string;
+  active?: boolean | null;
+  foodType: 'veg' | 'non-veg';
+  name: string;
+  images: (string | Media)[];
+  description?: string | null;
+  variants: {
+    unit: 'g' | 'kg' | 'pcs';
+    quantity: number;
+    rate: number;
+    price?: number | null;
+    discount?: number | null;
+    tax?: number | null;
+    netPrice?: number | null;
+    stock?: number | null;
+    stockStatus?: ('in-stock' | 'low-stock' | 'out-of-stock') | null;
+    id?: string | null;
+  }[];
+  category: string | Category;
+  productBarcode?: string | null;
+  /**
+   * Enter 4, 6 or 8 digit HSN code as per GST classification
+   */
+  hsnCode?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: string;
+  name: string;
+  slug?: string | null;
+  parent?: (string | null) | Category;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "company-profile".
+ */
+export interface CompanyProfile {
+  id: string;
+  companyName: string;
+  /**
+   * Enter GS1 Company Prefix (4–7 digits). Example: 1234. Do not include country code (890).
+   */
+  companyPrefix: string;
+  /**
+   * Enter 15-character GSTIN (Goods and Services Tax Identification Number). Example: 29ABCDE1234F2Z5
+   */
+  gstNumber?: string | null;
+  /**
+   * 14-digit Food Safety License Number issued by FSSAI
+   */
+  fssaiNumber?: string | null;
+  /**
+   * Udyam registration number issued for MSME businesses
+   */
+  msmeNumber?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  website?: string | null;
+  address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  country?: string | null;
+  pincode?: string | null;
+  logo?: (string | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "qr-settings".
+ */
+export interface QrSetting {
+  id: string;
+  name: string;
+  tablecollections: string | Table;
+  qrConfig: {
+    enabled?: boolean | null;
+    baseurl: string;
+    size?: number | null;
+    logoImage?: (string | null) | Media;
+  };
+  printconfig?: {
+    printsize?: ('small' | 'medium' | 'large') | null;
+    includeTableNumber?: boolean | null;
+    printTemplate?: string | null;
+  };
+  status?: ('draft' | 'generating' | 'ready') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tables".
+ */
+export interface Table {
+  id: string;
+  displayName: string;
+  sections: {
+    sectionTitle: string;
+    tableCount: number;
+    id?: string | null;
+  }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -189,6 +342,30 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'orders';
+        value: string | Order;
+      } | null)
+    | ({
+        relationTo: 'categories';
+        value: string | Category;
+      } | null)
+    | ({
+        relationTo: 'company-profile';
+        value: string | CompanyProfile;
+      } | null)
+    | ({
+        relationTo: 'qr-settings';
+        value: string | QrSetting;
+      } | null)
+    | ({
+        relationTo: 'tables';
+        value: string | Table;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: string | Product;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -271,6 +448,134 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders_select".
+ */
+export interface OrdersSelect<T extends boolean = true> {
+  products?:
+    | T
+    | {
+        product?: T;
+        priceAtOrder?: T;
+        quantity?: T;
+        subtotal?: T;
+        kitchenStatus?: T;
+        id?: T;
+      };
+  kotNumber?: T;
+  tableNumber?: T;
+  invoiceNumber?: T;
+  totalAmount?: T;
+  billingStatus?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  parent?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "company-profile_select".
+ */
+export interface CompanyProfileSelect<T extends boolean = true> {
+  companyName?: T;
+  companyPrefix?: T;
+  gstNumber?: T;
+  fssaiNumber?: T;
+  msmeNumber?: T;
+  phone?: T;
+  email?: T;
+  website?: T;
+  address?: T;
+  city?: T;
+  state?: T;
+  country?: T;
+  pincode?: T;
+  logo?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "qr-settings_select".
+ */
+export interface QrSettingsSelect<T extends boolean = true> {
+  name?: T;
+  tablecollections?: T;
+  qrConfig?:
+    | T
+    | {
+        enabled?: T;
+        baseurl?: T;
+        size?: T;
+        logoImage?: T;
+      };
+  printconfig?:
+    | T
+    | {
+        printsize?: T;
+        includeTableNumber?: T;
+        printTemplate?: T;
+      };
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tables_select".
+ */
+export interface TablesSelect<T extends boolean = true> {
+  displayName?: T;
+  sections?:
+    | T
+    | {
+        sectionTitle?: T;
+        tableCount?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  active?: T;
+  foodType?: T;
+  name?: T;
+  images?: T;
+  description?: T;
+  variants?:
+    | T
+    | {
+        unit?: T;
+        quantity?: T;
+        rate?: T;
+        price?: T;
+        discount?: T;
+        tax?: T;
+        netPrice?: T;
+        stock?: T;
+        stockStatus?: T;
+        id?: T;
+      };
+  category?: T;
+  productBarcode?: T;
+  hsnCode?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
