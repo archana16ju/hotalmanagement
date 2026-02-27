@@ -12,7 +12,7 @@ export const Tables: CollectionConfig = {
       name: 'displayName',
       type: 'text',
       required: true,
-      label: 'Floor / Area Name',
+      label: 'Title',
     },
 
     {

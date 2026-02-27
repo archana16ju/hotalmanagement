@@ -1,35 +1,25 @@
 import type { CollectionConfig } from 'payload'
-import { QRPrintGenerate } from '../components/QRPrintGenerate'
-import QRDisplay from '../components/QRDisplay'
+import React from 'react'
 
 export const QrSettings: CollectionConfig = {
   slug: 'qr-settings',
   timestamps: true,
-
   admin: {
     group: 'Settings',
     useAsTitle: 'name',
-    components: {
-      edit: {
-        beforeDocumentControls: [QRPrintGenerate as any],
-      },
-    },
   },
-
   access: {
     read: () => true,
     create: () => true,
     update: () => true,
   },
-
   fields: [
     {
       name: 'name',
       type: 'text',
       required: true,
-      label: 'Settings Name',
+      label: 'Name',
     },
-
     {
       name: 'tablecollections',
       type: 'relationship',
@@ -37,7 +27,6 @@ export const QrSettings: CollectionConfig = {
       required: true,
       label: 'Tables Collection',
     },
-
     {
       name: 'qrConfig',
       type: 'group',
@@ -46,8 +35,7 @@ export const QrSettings: CollectionConfig = {
         {
           name: 'enabled',
           type: 'checkbox',
-          defaultValue: false,
-          label: 'Enable QR Generation',
+          defaultValue: true,
         },
         {
           name: 'baseurl',
@@ -66,24 +54,26 @@ export const QrSettings: CollectionConfig = {
           name: 'logoImage',
           type: 'upload',
           relationTo: 'media',
-          label: 'Logo',
         },
       ],
     },
     {
-      name: 'qrDisplay',
+      name: 'qrGenerator',
       type: 'ui',
       admin: {
+        position:'sidebar',
         components: {
-          Field: QRDisplay as any,
+          Field: '/payload/components/QRLazyGenerator',
         },
       },
     },
-
     {
       name: 'printconfig',
       type: 'group',
       label: 'Print Settings',
+     admin: {
+        position: 'sidebar',
+     },
       fields: [
         {
           name: 'printsize',
@@ -113,11 +103,13 @@ export const QrSettings: CollectionConfig = {
       admin: {
         position: 'sidebar',
       },
-      options: [
+
+    options: [
         { label: 'Draft', value: 'draft' },
         { label: 'Generating', value: 'generating' },
         { label: 'Ready to print', value: 'ready' },
-      ],
+      ]
     },
+
   ],
 }
