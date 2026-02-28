@@ -45,13 +45,11 @@ export const Products: CollectionConfig = {
         },
       ],
     },
-
     {
       name: 'name',
       type: 'text',
       required: true,
     },
-
     {
       name: 'images',
       type: 'upload',
@@ -59,12 +57,10 @@ export const Products: CollectionConfig = {
       hasMany: true,
       required: true,
     },
-
     {
       name: 'description',
       type: 'textarea',
     },
-
     {
       name: 'variants',
       type: 'array',
@@ -90,31 +86,43 @@ export const Products: CollectionConfig = {
           type: 'number',
           required: true,
         },
+
         {
           name: 'price',
           type: 'number',
-          admin: { readOnly: true },
+          admin: {
+            readOnly: true,
+            description: 'Auto calculated (rate × quantity)',
+          },
         },
+
         {
           name: 'discount',
           type: 'number',
           defaultValue: 0,
         },
+
         {
           name: 'tax',
           type: 'number',
           defaultValue: 0,
         },
+
         {
           name: 'netPrice',
           type: 'number',
-          admin: { readOnly: true },
+          admin: {
+            readOnly: true,
+            description: 'Auto calculated (price − discount + tax)',
+          },
         },
+
         {
           name: 'stock',
           type: 'number',
           defaultValue: 0,
         },
+
         {
           name: 'stockStatus',
           type: 'select',
@@ -124,6 +132,7 @@ export const Products: CollectionConfig = {
             { label: 'Out of Stock', value: 'out-of-stock' },
           ],
         },
+
       ],
     },
     {
@@ -131,8 +140,8 @@ export const Products: CollectionConfig = {
       type: 'relationship',
       relationTo: 'categories',
       required: true,
-      admin: { 
-        position: 'sidebar' 
+      admin: {
+        position: 'sidebar',
       },
     },
     {
@@ -142,6 +151,7 @@ export const Products: CollectionConfig = {
       admin: {
         position: 'sidebar',
         readOnly: true,
+        description: 'Auto generated barcode',
       },
     },
     {
@@ -150,42 +160,41 @@ export const Products: CollectionConfig = {
       label: 'HSN Code',
       admin: {
         position: 'sidebar',
-        description: 'Enter 4, 6 or 8 digit HSN code as per GST classification',
       },
     },
+
   ],
 
-  hooks: {
-    beforeChange: [
-      generateBarcode,
+hooks: {
+  beforeChange: [
+    generateBarcode,
 
-      ({ data }) => {
+    ({ data }) => {
 
-        if (data.variants && Array.isArray(data.variants)) {
+      if (data.variants && Array.isArray(data.variants)) {
 
-          data.variants = data.variants.map((variant: any) => {
+        data.variants = data.variants.map((variant: any) => {
 
-            const rate = variant.rate || 0;
-            const quantity = variant.quantity || 0;
-            const discount = variant.discount || 0;
-            const tax = variant.tax || 0;
+          const rate = variant.rate || 0;
+          const quantity = variant.quantity || 0;
+          const discount = variant.discount || 0;
+          const tax = variant.tax || 0;
 
-            const price = rate * quantity;
-            const netPrice = price - discount + tax;
+          const price = rate * quantity;
+          const netPrice = price - discount + tax;
 
-            return {
-              ...variant,
-              price,
-              netPrice,
-            };
+          return {
+            ...variant,
+            price,
+            netPrice,
+          };
 
-          });
+        });
 
-        }
+      }
 
-        return data;
-      },
-    ],
-  },
-
-};
+      return data;
+    },
+  ],
+},
+}

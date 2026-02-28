@@ -12,6 +12,15 @@ const QRLazyGenerator = () => {
   const size = formFields?.['qrConfig.size']?.value || 300
   const tablecollections = formFields?.['tablecollections']?.value
 
+  const enableOrder =
+    formFields?.['qrOptions.enableOrder']?.value ? 1 : 0
+
+  const enablePayment =
+    formFields?.['qrOptions.enablePayment']?.value ? 1 : 0
+
+  const enableReview =
+    formFields?.['qrOptions.enableReview']?.value ? 1 : 0
+
   const [qrs, setQrs] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
 
@@ -61,18 +70,36 @@ const QRLazyGenerator = () => {
             section.sectionTitle.toLowerCase().replace(/\s+/g, '-') +
             `-table-${i}`
 
-          const url = baseurl + slug
+          const tableURL =
+            `${baseurl}?table=${slug}` +
+            `&order=${enableOrder}` +
+            `&payment=${enablePayment}` +
+            `&review=${enableReview}`
 
-          const image = await QRCode.toDataURL(url, {
+          const tableQR = await QRCode.toDataURL(tableURL, {
+            width: 300,
+            margin: 2,
+          })
+          const paymentURL =
+            `upi://pay?pa=hotel@upi` +
+            `&pn=HotelName` +
+            `&am=0` +
+            `&tn=${slug}`
+
+          const paymentQR = await QRCode.toDataURL(paymentURL, {
             width: 300,
             margin: 2,
           })
 
           list.push({
             name: `${section.sectionTitle} Table ${i}`,
-            image,
-            url,
+            slug,
+            tableURL,
+            tableQR,
+            paymentURL,
+            paymentQR,
           })
+
         }
       }
 
@@ -114,7 +141,6 @@ const QRLazyGenerator = () => {
             .qr-item {
               width: 200px;
               text-align: center;
-              margin-bottom: 20px;
             }
             img {
               width: 180px;
@@ -125,7 +151,7 @@ const QRLazyGenerator = () => {
         <body>
           ${qrs.map(qr => `
             <div class="qr-item">
-              <img src="${qr.image}" />
+              <img src="${qr.tableQR}" />
               <div>${qr.name}</div>
             </div>
           `).join('')}
@@ -142,7 +168,6 @@ const QRLazyGenerator = () => {
   }
 
   return (
-
     <div style={{ padding: 20 }}>
 
       <button
@@ -174,6 +199,7 @@ const QRLazyGenerator = () => {
       >
         Print QR Codes
       </button>
+
       <div style={{
         display: 'flex',
         flexWrap: 'wrap',
@@ -185,18 +211,24 @@ const QRLazyGenerator = () => {
 
           <div key={i} style={{ textAlign: 'center' }}>
 
-            <img src={qr.image} width={150} />
+            <img src={qr.tableQR} width={150} />
 
-            <div style={{ marginTop: 5 }}>
-              {qr.name}
-            </div>
+            <div>{qr.name}</div>
 
             <a
-              href={qr.image}
-              download={`${qr.name}.png`}
-              style={{ fontSize: 12 }}
+              href={qr.tableQR}
+              download={`${qr.slug}.png`}
             >
-              Download
+              Download Table QR
+            </a>
+
+            <br/>
+
+            <a
+              href={qr.paymentQR}
+              download={`${qr.slug}-payment.png`}
+            >
+              Download Payment QR
             </a>
 
           </div>

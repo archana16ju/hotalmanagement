@@ -1,18 +1,22 @@
 import type { CollectionConfig } from 'payload'
-import React from 'react'
 
 export const QrSettings: CollectionConfig = {
   slug: 'qr-settings',
+
   timestamps: true,
+
   admin: {
     group: 'Settings',
     useAsTitle: 'name',
   },
+
   access: {
     read: () => true,
     create: () => true,
     update: () => true,
+    delete: () => true,
   },
+
   fields: [
     {
       name: 'name',
@@ -25,7 +29,33 @@ export const QrSettings: CollectionConfig = {
       type: 'relationship',
       relationTo: 'tables',
       required: true,
-      label: 'Tables Collection',
+      label: 'Table',
+    },
+    
+    {
+      name: 'qrOptions',
+      type: 'group',
+      label: 'QR Options',
+      fields: [
+        {
+          name: 'enableOrder',
+          type: 'checkbox',
+          defaultValue: true,
+          label: 'Enable Order',
+        },
+        {
+          name: 'enablePayment',
+          type: 'checkbox',
+          defaultValue: true,
+          label: 'Enable Payment',
+        },
+        {
+          name: 'enableReview',
+          type: 'checkbox',
+          defaultValue: true,
+          label: 'Enable Review',
+        },
+      ],
     },
     {
       name: 'qrConfig',
@@ -36,12 +66,16 @@ export const QrSettings: CollectionConfig = {
           name: 'enabled',
           type: 'checkbox',
           defaultValue: true,
+          label: 'Enable QR',
         },
         {
           name: 'baseurl',
           type: 'text',
           required: true,
           label: 'Base URL',
+          admin: {
+            description: 'Example: https://yourdomain.com/table',
+          },
         },
         {
           name: 'size',
@@ -49,11 +83,13 @@ export const QrSettings: CollectionConfig = {
           defaultValue: 300,
           min: 100,
           max: 600,
+          label: 'QR Size',
         },
         {
           name: 'logoImage',
           type: 'upload',
           relationTo: 'media',
+          label: 'QR Logo',
         },
       ],
     },
@@ -61,7 +97,7 @@ export const QrSettings: CollectionConfig = {
       name: 'qrGenerator',
       type: 'ui',
       admin: {
-        position:'sidebar',
+        position: 'sidebar',
         components: {
           Field: '/payload/components/QRLazyGenerator',
         },
@@ -71,9 +107,9 @@ export const QrSettings: CollectionConfig = {
       name: 'printconfig',
       type: 'group',
       label: 'Print Settings',
-     admin: {
+      admin: {
         position: 'sidebar',
-     },
+      },
       fields: [
         {
           name: 'printsize',
@@ -89,10 +125,12 @@ export const QrSettings: CollectionConfig = {
           name: 'includeTableNumber',
           type: 'checkbox',
           defaultValue: true,
+          label: 'Include Table Number',
         },
         {
           name: 'printTemplate',
           type: 'textarea',
+          label: 'Print Template',
         },
       ],
     },
@@ -103,12 +141,20 @@ export const QrSettings: CollectionConfig = {
       admin: {
         position: 'sidebar',
       },
-
-    options: [
-        { label: 'Draft', value: 'draft' },
-        { label: 'Generating', value: 'generating' },
-        { label: 'Ready to print', value: 'ready' },
-      ]
+      options: [
+        {
+          label: 'Draft',
+          value: 'draft',
+        },
+        {
+          label: 'Generating',
+          value: 'generating',
+        },
+        {
+          label: 'Ready To Print',
+          value: 'ready',
+        },
+      ],
     },
 
   ],

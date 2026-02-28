@@ -2,8 +2,13 @@ import type { CollectionBeforeChangeHook } from 'payload';
 
 export const generateBarcode: CollectionBeforeChangeHook = async ({
   data,
+  operation,
   req,
 }) => {
+
+  if (operation !== 'create') {
+    return data;
+  }
 
   if (data.productBarcode) {
     return data;
@@ -18,17 +23,15 @@ export const generateBarcode: CollectionBeforeChangeHook = async ({
     throw new Error('Company profile not found');
   }
 
-  const companyPrefix = company.docs[0].companyPrefix;
+  const companyPrefix = company.docs[0].companyPrefix || 'PRD';
 
-  const products = await req.payload.find({
+  const productsCount = await req.payload.count({
     collection: 'products',
-    limit: 1,
-    sort: '-createdAt',
   });
 
-  const lastNumber = products.totalDocs + 1;
+  const nextNumber = productsCount.totalDocs + 1;
 
-  const productCode = String(lastNumber).padStart(5, '0');
+  const productCode = String(nextNumber).padStart(5, '0');
 
   data.productBarcode = `${companyPrefix}${productCode}`;
 

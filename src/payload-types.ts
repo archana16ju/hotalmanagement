@@ -75,6 +75,9 @@ export interface Config {
     'qr-settings': QrSetting;
     tables: Table;
     products: Product;
+    payments: Payment;
+    reviews: Review;
+    'payment-gateways': PaymentGateway;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -90,6 +93,9 @@ export interface Config {
     'qr-settings': QrSettingsSelect<false> | QrSettingsSelect<true>;
     tables: TablesSelect<false> | TablesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
+    payments: PaymentsSelect<false> | PaymentsSelect<true>;
+    reviews: ReviewsSelect<false> | ReviewsSelect<true>;
+    'payment-gateways': PaymentGatewaysSelect<false> | PaymentGatewaysSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -209,19 +215,25 @@ export interface Product {
     unit: 'g' | 'kg' | 'pcs';
     quantity: number;
     rate: number;
+    /**
+     * Auto calculated (rate × quantity)
+     */
     price?: number | null;
     discount?: number | null;
     tax?: number | null;
+    /**
+     * Auto calculated (price − discount + tax)
+     */
     netPrice?: number | null;
     stock?: number | null;
     stockStatus?: ('in-stock' | 'low-stock' | 'out-of-stock') | null;
     id?: string | null;
   }[];
   category: string | Category;
-  productBarcode?: string | null;
   /**
-   * Enter 4, 6 or 8 digit HSN code as per GST classification
+   * Auto generated barcode
    */
+  productBarcode?: string | null;
   hsnCode?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -281,8 +293,16 @@ export interface QrSetting {
   id: string;
   name: string;
   tablecollections: string | Table;
+  qrOptions?: {
+    enableOrder?: boolean | null;
+    enablePayment?: boolean | null;
+    enableReview?: boolean | null;
+  };
   qrConfig: {
     enabled?: boolean | null;
+    /**
+     * Example: https://yourdomain.com/table
+     */
     baseurl: string;
     size?: number | null;
     logoImage?: (string | null) | Media;
@@ -308,6 +328,51 @@ export interface Table {
     tableCount: number;
     id?: string | null;
   }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payments".
+ */
+export interface Payment {
+  id: string;
+  tableSlug: string;
+  order?: (string | null) | Order;
+  amount: number;
+  gateway: string | PaymentGateway;
+  transactionId?: string | null;
+  status?: ('pending' | 'success' | 'cancelled') | null;
+  paymentReference?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payment-gateways".
+ */
+export interface PaymentGateway {
+  id: string;
+  name: string;
+  provider: 'razorpay' | 'paytm' | 'phonepe';
+  keyId: string;
+  /**
+   * Keep secret secure
+   */
+  keySecret: string;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews".
+ */
+export interface Review {
+  id: string;
+  tableNumber: number;
+  reviewMessage: string;
+  rating: number;
   updatedAt: string;
   createdAt: string;
 }
@@ -366,6 +431,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'products';
         value: string | Product;
+      } | null)
+    | ({
+        relationTo: 'payments';
+        value: string | Payment;
+      } | null)
+    | ({
+        relationTo: 'reviews';
+        value: string | Review;
+      } | null)
+    | ({
+        relationTo: 'payment-gateways';
+        value: string | PaymentGateway;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -512,6 +589,13 @@ export interface CompanyProfileSelect<T extends boolean = true> {
 export interface QrSettingsSelect<T extends boolean = true> {
   name?: T;
   tablecollections?: T;
+  qrOptions?:
+    | T
+    | {
+        enableOrder?: T;
+        enablePayment?: T;
+        enableReview?: T;
+      };
   qrConfig?:
     | T
     | {
@@ -574,6 +658,45 @@ export interface ProductsSelect<T extends boolean = true> {
   category?: T;
   productBarcode?: T;
   hsnCode?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payments_select".
+ */
+export interface PaymentsSelect<T extends boolean = true> {
+  tableSlug?: T;
+  order?: T;
+  amount?: T;
+  gateway?: T;
+  transactionId?: T;
+  status?: T;
+  paymentReference?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews_select".
+ */
+export interface ReviewsSelect<T extends boolean = true> {
+  tableNumber?: T;
+  reviewMessage?: T;
+  rating?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payment-gateways_select".
+ */
+export interface PaymentGatewaysSelect<T extends boolean = true> {
+  name?: T;
+  provider?: T;
+  keyId?: T;
+  keySecret?: T;
+  isActive?: T;
   updatedAt?: T;
   createdAt?: T;
 }

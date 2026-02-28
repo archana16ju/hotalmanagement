@@ -13,6 +13,9 @@ import CompanyProfile from './collections/CompanyProfile'
 import { QrSettings } from './collections/QrSettings'
 import { Tables } from './collections/Tables'
 import { Products } from './collections/products'
+import Payments from './collections/payments'
+import Reviews from './collections/reviews'
+import PaymentGateways from './collections/PaymentGateways'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -32,7 +35,10 @@ export default buildConfig({
     CompanyProfile,
     QrSettings,
     Tables,
-    Products
+    Products,
+    Payments,
+    Reviews,
+    PaymentGateways
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
