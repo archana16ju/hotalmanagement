@@ -337,8 +337,8 @@ export interface Table {
  */
 export interface Payment {
   id: string;
-  tableSlug: string;
-  order?: (string | null) | Order;
+  tableId: string;
+  order: string | Order;
   amount: number;
   gateway: string | PaymentGateway;
   transactionId?: string | null;
@@ -666,7 +666,7 @@ export interface ProductsSelect<T extends boolean = true> {
  * via the `definition` "payments_select".
  */
 export interface PaymentsSelect<T extends boolean = true> {
-  tableSlug?: T;
+  tableId?: T;
   order?: T;
   amount?: T;
   gateway?: T;
