@@ -16,6 +16,16 @@ export const Tables: CollectionConfig = {
     },
 
     {
+      name: 'slug',
+      type: 'text',
+      required: true,
+      unique: true,
+      admin: {
+        readOnly: true,
+      },
+    },
+
+    {
       name: 'sections',
       type: 'array',
       required: true,
@@ -33,4 +43,19 @@ export const Tables: CollectionConfig = {
       ],
     },
   ],
+
+  hooks: {
+    beforeValidate: [
+      ({ data }) => {
+        if (data?.displayName) {
+          data.slug = data.displayName
+            .toLowerCase()
+            .replace(/ /g, '-')      
+            .replace(/[^\w-]+/g, '') 
+        }
+
+        return data
+      },
+    ],
+  },
 }
