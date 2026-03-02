@@ -4,111 +4,82 @@ import React, { useState } from 'react'
 import QRCode from 'qrcode'
 import { useFormFields } from '@payloadcms/ui'
 
-const QRLazyGenerator = () => {
+interface QRItem {
+  name: string
+  slug: string
+  tableURL: string
+  tableQR: string
+  paymentURL: string
+  paymentQR: string
+}
 
+const QRLazyGenerator = () => {
   const formFields = useFormFields(([fields]) => fields)
 
-  const rawBaseurl =
-    (formFields?.['qrConfig.baseurl']?.value as string) || ''
+  const rawBaseurl = (formFields?.['qrConfig.baseurl']?.value as string) || ''
+  const size = (formFields?.['qrConfig.size']?.value as number) || 300
+  const tablecollections = formFields?.['tablecollections']?.value
 
-  const size =
-    (formFields?.['qrConfig.size']?.value as number) || 300
+  const enableOrder = formFields?.['qrOptions.enableOrder']?.value ? 1 : 0
+  const enablePayment = formFields?.['qrOptions.enablePayment']?.value ? 1 : 0
+  const enableReview = formFields?.['qrOptions.enableReview']?.value ? 1 : 0
 
-  const tablecollections =
-    formFields?.['tablecollections']?.value
-
-  const enableOrder =
-    formFields?.['qrOptions.enableOrder']?.value ? 1 : 0
-
-  const enablePayment =
-    formFields?.['qrOptions.enablePayment']?.value ? 1 : 0
-
-  const enableReview =
-    formFields?.['qrOptions.enableReview']?.value ? 1 : 0
-
-  const [qrs, setQrs] = useState<any[]>([])
+  const [qrs, setQrs] = useState<QRItem[]>([])
   const [loading, setLoading] = useState(false)
 
   const generateQRCodes = async () => {
-
     if (!rawBaseurl) {
       alert('Missing Base URL. Please enter and SAVE.')
       return
     }
-
     if (!tablecollections) {
       alert('Please select Tables Collection and SAVE.')
       return
     }
 
     const baseurl = rawBaseurl.trim().endsWith('/')
-  ? rawBaseurl.trim()
-  : rawBaseurl.trim() + '/'
+      ? rawBaseurl.trim()
+      : rawBaseurl.trim() + '/'
 
     setLoading(true)
 
     try {
-
       const res = await fetch(`/api/tables/${tablecollections}`)
-
-      if (!res.ok) {
-        throw new Error('Failed to fetch tables')
-      }
-
+      if (!res.ok) throw new Error('Failed to fetch tables')
       const tableDoc = await res.json()
-
       const sections = tableDoc?.sections
-
       if (!sections?.length) {
         alert('No sections found')
         setLoading(false)
         return
       }
 
-      const list: any[] = []
+      const list: QRItem[] = []
 
       for (const section of sections) {
-
-        const count =
-          section.tableCount || section.tablecount
-
+        const count = section.tableCount || section.tablecount
         if (!count) continue
 
         for (let i = 1; i <= count; i++) {
-      const sectionName = section.sectionTitle || "table"
+          const sectionName = section.sectionTitle || 'table'
+          const slug =
+            sectionName
+              .toLowerCase()
+              .trim()
+              .replace(/\s+/g, '-') + `-table-${i}`
 
-      const slug =
-       sectionName
-         .toLowerCase()
-         .trim()
-        .replace(/\s+/g, '-') +
-        `-table-${i}`
+          const tableURL = `${baseurl}${slug}`
+          const tableQR = await QRCode.toDataURL(tableURL, {
+            width: size,
+            margin: 2,
+          })
 
-      console.log("Generated slug:", slug)
-
-    const tableURL = `${baseurl}${slug}`
-
-          const tableQR = await QRCode.toDataURL(
-            tableURL,
-            {
-              width: size,
-              margin: 2,
-            }
-          )
-
-          const paymentURL =
-            `upi://pay?pa=hotel@upi` +
-            `&pn=HotelName` +
-            `&am=0` +
-            `&tn=${slug}`
-
-          const paymentQR = await QRCode.toDataURL(
-            paymentURL,
-            {
-              width: size,
-              margin: 2,
-            }
-          )
+          const paymentURL = enablePayment
+            ? `upi://pay?pa=hotel@upi&pn=HotelName&am=0&tn=${slug}`
+            : ''
+          const paymentQR = paymentURL
+            ? await QRCode.toDataURL(paymentURL, { width: size, margin: 2 })
+            : ''
 
           list.push({
             name: `${section.sectionTitle} Table ${i}`,
@@ -118,31 +89,25 @@ const QRLazyGenerator = () => {
             paymentURL,
             paymentQR,
           })
-
         }
       }
 
       setQrs(list)
-
     } catch (error) {
-
       console.error(error)
       alert('Error generating QR codes')
-
     }
 
     setLoading(false)
   }
 
   const printQRCodes = () => {
-
     if (!qrs.length) {
       alert('Generate QR codes first')
       return
     }
 
     const printWindow = window.open('', '_blank')
-
     if (!printWindow) return
 
     printWindow.document.write(`
@@ -168,27 +133,32 @@ const QRLazyGenerator = () => {
           </style>
         </head>
         <body>
-          ${qrs.map(qr => `
+          ${qrs
+            .map(
+              (qr) => `
             <div class="qr-item">
               <img src="${qr.tableQR}" />
               <div>${qr.name}</div>
+              ${
+                enablePayment && qr.paymentQR
+                  ? `<img src="${qr.paymentQR}" style="margin-top: 10px;" /><div>Payment</div>`
+                  : ''
+              }
             </div>
-          `).join('')}
+          `
+            )
+            .join('')}
         </body>
       </html>
     `)
 
     printWindow.document.close()
     printWindow.focus()
-
-    setTimeout(() => {
-      printWindow.print()
-    }, 500)
+    setTimeout(() => printWindow.print(), 500)
   }
 
   return (
     <div style={{ padding: 20 }}>
-
       <button
         type="button"
         onClick={generateQRCodes}
@@ -199,7 +169,7 @@ const QRLazyGenerator = () => {
           color: '#fff',
           border: 'none',
           cursor: 'pointer',
-          marginRight: 10
+          marginRight: 10,
         }}
       >
         {loading ? 'Generating...' : 'Generate QR Codes'}
@@ -213,43 +183,36 @@ const QRLazyGenerator = () => {
           background: '#007bff',
           color: '#fff',
           border: 'none',
-          cursor: 'pointer'
+          cursor: 'pointer',
         }}
       >
         Print QR Codes
       </button>
 
-      <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: 20,
-        marginTop: 20
-      }}>
-
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 20,
+          marginTop: 20,
+        }}
+      >
         {qrs.map((qr, i) => (
-
           <div key={i} style={{ textAlign: 'center' }}>
-
             <img src={qr.tableQR} width={150} />
-
             <div>{qr.name}</div>
-
             <a href={qr.tableQR} download={`${qr.slug}.png`}>
               Download Table QR
             </a>
-
-            <br/>
-
-            <a href={qr.paymentQR} download={`${qr.slug}-payment.png`}>
-              Download Payment QR
-            </a>
-
+            <br />
+            {enablePayment && qr.paymentQR && (
+              <a href={qr.paymentQR} download={`${qr.slug}-payment.png`}>
+                Download Payment QR
+              </a>
+            )}
           </div>
-
         ))}
-
       </div>
-
     </div>
   )
 }
