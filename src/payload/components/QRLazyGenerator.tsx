@@ -41,10 +41,9 @@ const QRLazyGenerator = () => {
       return
     }
 
-    // ✅ SAFE baseurl
-    const baseurl = rawBaseurl.endsWith('/')
-      ? rawBaseurl
-      : rawBaseurl + '/'
+    const baseurl = rawBaseurl.trim().endsWith('/')
+  ? rawBaseurl.trim()
+  : rawBaseurl.trim() + '/'
 
     setLoading(true)
 
@@ -76,14 +75,18 @@ const QRLazyGenerator = () => {
         if (!count) continue
 
         for (let i = 1; i <= count; i++) {
+      const sectionName = section.sectionTitle || "table"
 
-          const slug =
-            section.sectionTitle
-              .toLowerCase()
-              .replace(/\s+/g, '-') +
-            `-table-${i}`
+      const slug =
+       sectionName
+         .toLowerCase()
+         .trim()
+        .replace(/\s+/g, '-') +
+        `-table-${i}`
 
-     const tableURL = `${baseurl}${slug}`
+      console.log("Generated slug:", slug)
+
+    const tableURL = `${baseurl}${slug}`
 
           const tableQR = await QRCode.toDataURL(
             tableURL,

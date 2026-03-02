@@ -53,6 +53,7 @@ export const Tables: CollectionConfig = {
             .replace(/ /g, '-')      
             .replace(/[^\w-]+/g, '') 
         }
+        
 
         return data
       },
