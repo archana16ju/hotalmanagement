@@ -82,8 +82,8 @@ const QRLazyGenerator = () => {
               .toLowerCase()
               .replace(/\s+/g, '-') +
             `-table-${i}`
-        const tableURL = new URL(slug, baseurl).toString() +
-           `?order=${enableOrder}&payment=${enablePayment}&review=${enableReview}`
+
+     const tableURL = `${baseurl}${slug}`
 
           const tableQR = await QRCode.toDataURL(
             tableURL,
