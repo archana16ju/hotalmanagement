@@ -8,9 +8,14 @@ const QRLazyGenerator = () => {
 
   const formFields = useFormFields(([fields]) => fields)
 
-  const baseurl = formFields?.['qrConfig.baseurl']?.value
-  const size = formFields?.['qrConfig.size']?.value || 300
-  const tablecollections = formFields?.['tablecollections']?.value
+  const rawBaseurl =
+    (formFields?.['qrConfig.baseurl']?.value as string) || ''
+
+  const size =
+    (formFields?.['qrConfig.size']?.value as number) || 300
+
+  const tablecollections =
+    formFields?.['tablecollections']?.value
 
   const enableOrder =
     formFields?.['qrOptions.enableOrder']?.value ? 1 : 0
@@ -26,7 +31,7 @@ const QRLazyGenerator = () => {
 
   const generateQRCodes = async () => {
 
-    if (!baseurl) {
+    if (!rawBaseurl) {
       alert('Missing Base URL. Please enter and SAVE.')
       return
     }
@@ -35,6 +40,11 @@ const QRLazyGenerator = () => {
       alert('Please select Tables Collection and SAVE.')
       return
     }
+
+    // ✅ SAFE baseurl
+    const baseurl = rawBaseurl.endsWith('/')
+      ? rawBaseurl
+      : rawBaseurl + '/'
 
     setLoading(true)
 
@@ -60,36 +70,46 @@ const QRLazyGenerator = () => {
 
       for (const section of sections) {
 
-        const count = section.tableCount || section.tablecount
+        const count =
+          section.tableCount || section.tablecount
 
         if (!count) continue
 
         for (let i = 1; i <= count; i++) {
 
           const slug =
-            section.sectionTitle.toLowerCase().replace(/\s+/g, '-') +
+            section.sectionTitle
+              .toLowerCase()
+              .replace(/\s+/g, '-') +
             `-table-${i}`
 
-        const tableURL =
-           `${baseurl}${slug}` +
-           `?order=${enableOrder}` +
-           `&payment=${enablePayment}` +
-           `&review=${enableReview}`
+          const tableURL =
+            `${baseurl}${slug}` +
+            `?order=${enableOrder}` +
+            `&payment=${enablePayment}` +
+            `&review=${enableReview}`
 
-          const tableQR = await QRCode.toDataURL(tableURL, {
-            width: 300,
-            margin: 2,
-          })
+          const tableQR = await QRCode.toDataURL(
+            tableURL,
+            {
+              width: size,
+              margin: 2,
+            }
+          )
+
           const paymentURL =
             `upi://pay?pa=hotel@upi` +
             `&pn=HotelName` +
             `&am=0` +
             `&tn=${slug}`
 
-          const paymentQR = await QRCode.toDataURL(paymentURL, {
-            width: 300,
-            margin: 2,
-          })
+          const paymentQR = await QRCode.toDataURL(
+            paymentURL,
+            {
+              width: size,
+              margin: 2,
+            }
+          )
 
           list.push({
             name: `${section.sectionTitle} Table ${i}`,
@@ -215,19 +235,13 @@ const QRLazyGenerator = () => {
 
             <div>{qr.name}</div>
 
-            <a
-              href={qr.tableQR}
-              download={`${qr.slug}.png`}
-            >
+            <a href={qr.tableQR} download={`${qr.slug}.png`}>
               Download Table QR
             </a>
 
             <br/>
 
-            <a
-              href={qr.paymentQR}
-              download={`${qr.slug}-payment.png`}
-            >
+            <a href={qr.paymentQR} download={`${qr.slug}-payment.png`}>
               Download Payment QR
             </a>
 
