@@ -7,18 +7,24 @@ interface Order {
   table: string
   items: { name: string; qty: number }[]
 }
-interface OrderPageProps {
+
+export default function OrderPage({
+  params,
+}: {
   params: { id: string }
-}
-export default function OrderPage({ params }: OrderPageProps) {
-  const { id } = params
+}) {
+  const id = params.id
+
   const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
+
   useEffect(() => {
     fetch(`/api/orders?table=${id}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data?.length > 0) setOrder(data[0])
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.length > 0) {
+          setOrder(data[0])
+        }
         setLoading(false)
       })
       .catch(() => setLoading(false))
@@ -30,6 +36,7 @@ export default function OrderPage({ params }: OrderPageProps) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ table: id, items: [] }),
     })
+
     const newOrder = await res.json()
     setOrder(newOrder)
   }
@@ -43,7 +50,10 @@ export default function OrderPage({ params }: OrderPageProps) {
       {order ? (
         <p>Order exists! You can add items to it here.</p>
       ) : (
-        <button onClick={createOrder} style={{ padding: '10px 20px', marginTop: 20 }}>
+        <button
+          onClick={createOrder}
+          style={{ padding: '10px 20px', marginTop: 20 }}
+        >
           Create Order
         </button>
       )}
