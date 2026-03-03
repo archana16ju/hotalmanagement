@@ -19,7 +19,7 @@ export default function TablePage({ params }: TablePageProps) {
       background: '#f4f4f4',
       padding: 20
     }}>
-      <h1 style={{ marginBottom: 10 }}>Welcome</h1>
+     <h1 style={{ marginBottom: 10 }}>WELCOME UPDATED</h1>
       <h2 style={{ marginBottom: 30 }}>{id}</h2>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 15, width: 250 }}>
