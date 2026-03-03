@@ -32,8 +32,8 @@ const QRLazyGenerator = () => {
     if (!tablecollections) { alert('Please select Tables Collection and SAVE.'); return }
 
     const baseurl = rawBaseurl.trim().endsWith('/') ? rawBaseurl.trim() : rawBaseurl.trim() + '/'
-
     setLoading(true)
+
     try {
       const res = await fetch(`/api/tables/${tablecollections}`)
       if (!res.ok) throw new Error('Failed to fetch tables')
@@ -88,7 +88,7 @@ const QRLazyGenerator = () => {
           ${qrs.map(qr => `
             <div class="qr-item">
               <img src="${qr.tableQR}" /><div>${qr.name}</div>
-              ${enablePayment && qr.paymentQR ? `<img src="${qr.paymentQR}" style="margin-top: 10px;" /><div>Payment</div>` : ''}
+              ${qr.paymentQR ? `<img src="${qr.paymentQR}" style="margin-top: 10px;" /><div>Payment</div>` : ''}
             </div>
           `).join('')}
         </body>
@@ -114,7 +114,7 @@ const QRLazyGenerator = () => {
             <div>{qr.name}</div>
             <a href={qr.tableQR} download={`${qr.slug}.png`}>Download Table QR</a>
             <br/>
-            {enablePayment && qr.paymentQR && <a href={qr.paymentQR} download={`${qr.slug}-payment.png`}>Download Payment QR</a>}
+            {qr.paymentQR && <a href={qr.paymentQR} download={`${qr.slug}-payment.png`}>Download Payment QR</a>}
           </div>
         ))}
       </div>
