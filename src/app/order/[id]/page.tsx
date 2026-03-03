@@ -7,16 +7,13 @@ interface Order {
   table: string
   items: { name: string; qty: number }[]
 }
-
 interface OrderPageProps {
   params: { id: string }
 }
-
 export default function OrderPage({ params }: OrderPageProps) {
   const { id } = params
   const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
-
   useEffect(() => {
     fetch(`/api/orders?table=${id}`)
       .then(res => res.json())

@@ -1,61 +1,52 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 
 interface TablePageProps {
-  params: {
-    id: string
-  }
+  params: { id: string }
 }
 
 export default function TablePage({ params }: TablePageProps) {
   const { id } = params
-  const searchParams = useSearchParams()
-
-  const enableOrder = searchParams.get('order') === '1'
-  const enablePayment = searchParams.get('payment') === '1'
-  const enableReview = searchParams.get('review') === '1'
-
-  const formattedTableName = id.replace(/-/g, ' ').toUpperCase()
 
   return (
-    <div style={{ padding: 40, textAlign: 'center', fontFamily: 'Arial' }}>
-      <h1>Welcome to {formattedTableName}</h1>
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      background: '#f4f4f4',
+      padding: 20
+    }}>
+      <h1 style={{ marginBottom: 10 }}>Welcome</h1>
+      <h2 style={{ marginBottom: 30 }}>{id}</h2>
 
-      <div style={{ marginTop: 40 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 15, width: 250 }}>
+        
+        <Link href={`/order/${id}`}>
+          <button style={buttonStyle}>Order Food</button>
+        </Link>
 
-        {enableOrder && (
-          <button
-            onClick={() => window.location.href = `/order/${id}`}
-            style={{ padding: '12px 25px', margin: 10 }}
-          >
-            Order
-          </button>
-        )}
+        <Link href={`/payment/${id}`}>
+          <button style={buttonStyle}>Make Payment</button>
+        </Link>
 
-        {enablePayment && (
-          <a
-            href={`upi://pay?pa=hotel@upi&pn=HotelName&am=0&tn=${id}`}
-            style={{
-              padding: '12px 25px',
-              margin: 10,
-              display: 'inline-block'
-            }}
-          >
-            Payment
-          </a>
-        )}
-
-        {enableReview && (
-          <button
-            onClick={() => window.location.href = `/review/${id}`}
-            style={{ padding: '12px 25px', margin: 10 }}
-          >
-            Review
-          </button>
-        )}
+        <Link href={`/review/${id}`}>
+          <button style={buttonStyle}>Leave Review</button>
+        </Link>
 
       </div>
     </div>
   )
+}
+
+const buttonStyle: React.CSSProperties = {
+  padding: '12px',
+  fontSize: '16px',
+  backgroundColor: '#000',
+  color: '#fff',
+  border: 'none',
+  borderRadius: '6px',
+  cursor: 'pointer'
 }

@@ -5,7 +5,6 @@ import { useState } from 'react'
 interface ReviewPageProps {
   params: { id: string }
 }
-
 export default function ReviewPage({ params }: ReviewPageProps) {
   const { id } = params
   const [review, setReview] = useState('')
@@ -19,9 +18,7 @@ export default function ReviewPage({ params }: ReviewPageProps) {
     })
     setSubmitted(true)
   }
-
   if (submitted) return <p>Thank you for your review!</p>
-
   return (
     <div style={{ padding: 40, textAlign: 'center' }}>
       <h1>Leave Review for {id.replace(/-/g, ' ')}</h1>
