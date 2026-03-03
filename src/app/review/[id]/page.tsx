@@ -3,11 +3,11 @@
 import { useState } from 'react'
 
 interface ReviewPageProps {
-  params: { slug: string }
+  params: { id: string }
 }
 
 export default function ReviewPage({ params }: ReviewPageProps) {
-  const { slug } = params
+  const { id } = params
   const [review, setReview] = useState('')
   const [submitted, setSubmitted] = useState(false)
 
@@ -15,7 +15,7 @@ export default function ReviewPage({ params }: ReviewPageProps) {
     await fetch('/api/reviews', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ table: slug, text: review }),
+      body: JSON.stringify({ table: id, text: review }),
     })
     setSubmitted(true)
   }
@@ -24,7 +24,7 @@ export default function ReviewPage({ params }: ReviewPageProps) {
 
   return (
     <div style={{ padding: 40, textAlign: 'center' }}>
-      <h1>Leave Review for {slug.replace(/-/g, ' ')}</h1>
+      <h1>Leave Review for {id.replace(/-/g, ' ')}</h1>
       <textarea
         value={review}
         onChange={(e) => setReview(e.target.value)}
