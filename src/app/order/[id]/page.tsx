@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useParams } from 'next/navigation'
 
 interface Order {
   id: string
@@ -8,17 +9,16 @@ interface Order {
   items: { name: string; qty: number }[]
 }
 
-export default function OrderPage({
-  params,
-}: {
-  params: { id: string }
-}) {
-  const id = params.id
+export default function OrderPage() {
+  const params = useParams()
+  const id = params?.id as string
 
   const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!id) return
+
     fetch(`/api/orders?table=${id}`)
       .then((res) => res.json())
       .then((data) => {
@@ -45,7 +45,7 @@ export default function OrderPage({
 
   return (
     <div style={{ padding: 40, textAlign: 'center' }}>
-      <h1>Place Order for {id.replace(/-/g, ' ')}</h1>
+      <h1>Place Order for {id?.replace(/-/g, ' ')}</h1>
 
       {order ? (
         <p>Order exists! You can add items to it here.</p>
