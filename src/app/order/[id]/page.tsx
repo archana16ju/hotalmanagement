@@ -9,29 +9,29 @@ interface Order {
 }
 
 interface OrderPageProps {
-  params: { slug: string }
+  params: { id: string }
 }
 
 export default function OrderPage({ params }: OrderPageProps) {
-  const { slug } = params
+  const { id } = params
   const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`/api/orders?table=${slug}`)
+    fetch(`/api/orders?table=${id}`)
       .then(res => res.json())
       .then(data => {
         if (data?.length > 0) setOrder(data[0])
         setLoading(false)
       })
       .catch(() => setLoading(false))
-  }, [slug])
+  }, [id])
 
   const createOrder = async () => {
     const res = await fetch('/api/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ table: slug, items: [] }),
+      body: JSON.stringify({ table: id, items: [] }),
     })
     const newOrder = await res.json()
     setOrder(newOrder)
@@ -41,7 +41,7 @@ export default function OrderPage({ params }: OrderPageProps) {
 
   return (
     <div style={{ padding: 40, textAlign: 'center' }}>
-      <h1>Place Order for {slug.replace(/-/g, ' ')}</h1>
+      <h1>Place Order for {id.replace(/-/g, ' ')}</h1>
 
       {order ? (
         <p>Order exists! You can add items to it here.</p>
