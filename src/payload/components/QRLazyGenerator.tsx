@@ -50,7 +50,7 @@ const QRLazyGenerator = () => {
           const sectionName = section.sectionTitle || 'table'
           const slug = sectionName.toLowerCase().trim().replace(/\s+/g, '-') + `-table-${i}`
 
-          const tableURL = `${baseurl}${slug}?order=${enableOrder}&payment=${enablePayment}&review=${enableReview}`
+          const tableURL = `${baseurl}${slug}order=${enableOrder}&payment=${enablePayment}&review=${enableReview}`
           const tableQR = await QRCode.toDataURL(tableURL, { width: size, margin: 2 })
 
           const paymentURL = enablePayment ? `upi://pay?pa=hotel@upi&pn=HotelName&am=0&tn=${slug}` : ''
