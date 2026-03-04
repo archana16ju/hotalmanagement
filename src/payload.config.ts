@@ -1,6 +1,5 @@
 import { mongooseAdapter } from '@payloadcms/db-mongodb';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
-import { nextPlugin } from '@payloadcms/next';
 import path from 'path';
 import { buildConfig } from 'payload';
 import { fileURLToPath } from 'url';
@@ -59,5 +58,5 @@ export default buildConfig({
     url: process.env.DATABASE_URL!, 
   }),
   sharp,
-  plugins: [nextPlugin()],
+  plugins: [],
 });

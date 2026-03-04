@@ -16,7 +16,6 @@ type Args = {
     [key: string]: string | string[]
   }>
 }
-
 export const generateMetadata = ({ params, searchParams }: Args): Promise<Metadata> =>
   generatePageMetadata({ config, params, searchParams })
 
