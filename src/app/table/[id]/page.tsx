@@ -29,10 +29,12 @@ export default function QRPage() {
           </div>
           <div>Table ID: {tableId}</div>
         </div>
+
         <div>
-          <h3>Search Results for "{search}"</h3>
+          <h3>Search Results for &quot;{search}&quot;</h3>
           <p>You can render menu items or orders here based on search.</p>
         </div>
+
       </div>
     </div>
   );
