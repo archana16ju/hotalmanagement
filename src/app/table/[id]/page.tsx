@@ -1,6 +1,6 @@
 'use client'
 
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 interface QRSettingsType {
@@ -20,63 +20,69 @@ export default function TableHubPage() {
   useEffect(() => {
     const fetchQRSettings = async () => {
       try {
-        const res = await fetch('/api/qr-settings')
-        if (!res.ok) throw new Error('Failed to fetch QR settings')
+        // Use your Payload API endpoint here
+        const res = await fetch('https://hotalmanagement-hjy7.vercel.app/api/qr-settings')
         const data = await res.json()
 
-        // Assuming you have only one QRSettings config
+        // Assuming first document is your active QR settings
         setQRSettings(data?.docs?.[0] || null)
       } catch (error) {
-        console.error(error)
+        console.error('Failed to fetch QR settings:', error)
       } finally {
         setLoading(false)
       }
     }
-
     fetchQRSettings()
   }, [])
 
-  if (loading) return <p>Loading table...</p>
-  if (!qrSettings) return <p>No QR settings found. Please check admin.</p>
+  if (loading) return <p style={{ textAlign: 'center', marginTop: 50 }}>Loading table...</p>
+  if (!qrSettings) return <p style={{ textAlign: 'center', marginTop: 50 }}>No QR settings found.</p>
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Welcome to Table {tableId}</h1>
-      <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
+    <div style={{ padding: 20, textAlign: 'center', fontFamily: 'Arial' }}>
+      <h1 style={{ fontSize: 28, marginBottom: 40 }}>Welcome to Table {tableId}</h1>
+
+      <div style={{ display: 'flex', justifyContent: 'center', gap: 30 }}>
         {qrSettings.qrOptions.enableOrder && (
-          <button
-            style={buttonStyle}
-            onClick={() => router.push(`/order/${tableId}`)}
-          >
-            Order
-          </button>
+          <div onClick={() => router.push(`/order/${tableId}`)} style={cardStyle}>
+            <img src="/assets/order.png" alt="Order" style={iconStyle} />
+            <p style={{ margin: 0, fontWeight: 500 }}>Order</p>
+          </div>
         )}
         {qrSettings.qrOptions.enablePayment && (
-          <button
-            style={buttonStyle}
-            onClick={() => router.push(`/payment/${tableId}`)}
-          >
-            Payment
-          </button>
+          <div onClick={() => router.push(`/payment/${tableId}`)} style={cardStyle}>
+            <img src="/assets/payment.png" alt="Payment" style={iconStyle} />
+            <p style={{ margin: 0, fontWeight: 500 }}>Payment</p>
+          </div>
         )}
         {qrSettings.qrOptions.enableReview && (
-          <button
-            style={buttonStyle}
-            onClick={() => router.push(`/review/${tableId}`)}
-          >
-            Review
-          </button>
+          <div onClick={() => router.push(`/review/${tableId}`)} style={cardStyle}>
+            <img src="/assets/review.png" alt="Review" style={iconStyle} />
+            <p style={{ margin: 0, fontWeight: 500 }}>Review</p>
+          </div>
         )}
       </div>
     </div>
   )
 }
 
-const buttonStyle: React.CSSProperties = {
-  padding: '10px 20px',
-  backgroundColor: '#007bff',
-  color: '#fff',
-  border: 'none',
+const cardStyle: React.CSSProperties = {
+  width: 120,
+  height: 120,
+  borderRadius: 12,
+  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
   cursor: 'pointer',
-  borderRadius: 5,
+  transition: 'all 0.2s ease',
+  backgroundColor: '#fff',
+  padding: 10,
+}
+
+const iconStyle: React.CSSProperties = {
+  width: 50,
+  height: 50,
+  marginBottom: 10,
 }
