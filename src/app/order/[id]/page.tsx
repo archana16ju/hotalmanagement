@@ -1,28 +1,31 @@
-'use client'
-import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+'use client';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function OrderPage() {
-  const { id: tableId } = useParams()
-  const [order, setOrder] = useState<any>(null)
+  const { id: tableId } = useParams();
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch(`/api/order/${tableId}`)
       .then(res => res.json())
-      .then(data => setOrder(data?.docs?.[0]))
-  }, [tableId])
+      .then(data => setOrders(data.orders || []))
+      .finally(() => setLoading(false));
+  }, [tableId]);
 
-  if (!order) return <p>Loading order...</p>
+  if (loading) return <p style={{ textAlign: 'center', marginTop: 50 }}>Loading orders...</p>;
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Orders for Table {tableId}</h1>
-      {order.items?.map((item: any, idx: number) => (
-        <div key={idx}>
-          {item.name} x {item.quantity} - ₹{item.price}
+    <div>
+      <h1 style={{ fontSize: '24px', marginBottom: '20px' }}>Orders for Table {tableId}</h1>
+      {orders.length === 0 && <p>No orders yet.</p>}
+      {orders.map((order, idx) => (
+        <div key={idx} className="order-item">
+          <p>{order.itemName}</p>
+          <p>Qty: {order.quantity}</p>
         </div>
       ))}
-      <p className="mt-4 font-bold">Total: ₹{order.total}</p>
     </div>
-  )
+  );
 }
