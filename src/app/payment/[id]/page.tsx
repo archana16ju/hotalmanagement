@@ -1,4 +1,5 @@
 'use client';
+
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -12,13 +13,14 @@ export default function PaymentPage() {
       .then(setPayment);
   }, [tableId]);
 
-  if (!payment) return <p style={{ textAlign: 'center', marginTop: 50 }}>Loading payment info...</p>;
+  if (!payment) return <p style={{ textAlign: 'center' }}>Loading payment...</p>;
 
   return (
-    <div>
-      <h1 style={{ fontSize: '24px', marginBottom: '20px' }}>Payment for Table {tableId}</h1>
+    <div style={{ maxWidth: 600, margin: '0 auto' }}>
+      <h2>Payment for Table {tableId}</h2>
       <p>Total Amount: ₹{payment.totalAmount}</p>
       <p>Status: {payment.status}</p>
+      <button className="button">Pay Now</button>
     </div>
   );
 }

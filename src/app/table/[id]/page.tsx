@@ -1,4 +1,5 @@
 'use client';
+
 import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -23,13 +24,13 @@ export default function TableHubPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <p style={{ textAlign: 'center', marginTop: 50 }}>Loading table...</p>;
-  if (!qrSettings) return <p style={{ textAlign: 'center', marginTop: 50 }}>No QR settings found.</p>;
+  if (loading) return <p style={{ textAlign: 'center' }}>Loading table...</p>;
+  if (!qrSettings) return <p style={{ textAlign: 'center' }}>No QR settings found.</p>;
 
   return (
-    <div style={{ textAlign: 'center' }}>
-      <h1 style={{ fontSize: '28px', marginBottom: '40px' }}>Welcome to Table {tableId}</h1>
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '30px' }}>
+    <div>
+      <h2 style={{ textAlign: 'center', marginBottom: 30 }}>Welcome to Table {tableId}</h2>
+      <div className="card-container">
         {qrSettings.qrOptions.enableOrder && (
           <div className="card" onClick={() => router.push(`/order/${tableId}`)}>
             <img src="/assets/order.png" alt="Order" />
@@ -51,25 +52,4 @@ export default function TableHubPage() {
       </div>
     </div>
   );
-}
-
-const cardStyle: React.CSSProperties = {
-  width: 200,
-  height: 200,
-  borderRadius: 12,
-  boxShadow: '0 5px 20px rgba(0,0,0,0.1)',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  cursor: 'pointer',
-  transition: 'all 0.2s ease',
-  backgroundColor: '#fff',
-  padding: 10,
-}
-
-const iconStyle: React.CSSProperties = {
-  width: 50,
-  height: 50,
-  marginBottom: 10,
 }

@@ -1,4 +1,5 @@
 'use client';
+
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 
@@ -17,11 +18,11 @@ export default function ReviewPage() {
     setSubmitted(true);
   };
 
-  if (submitted) return <p style={{ textAlign: 'center', marginTop: 50 }}>Thank you for your feedback!</p>;
+  if (submitted) return <p style={{ textAlign: 'center' }}>Thank you for your feedback!</p>;
 
   return (
-    <div style={{ maxWidth: '500px', margin: '0 auto', padding: '20px' }}>
-      <h1 style={{ fontSize: '24px', marginBottom: '20px' }}>Review Table {tableId}</h1>
+    <div style={{ maxWidth: 600, margin: '0 auto' }}>
+      <h2>Review Table {tableId}</h2>
       <label>Rating:</label>
       <select value={rating} onChange={e => setRating(Number(e.target.value))}>
         <option value={0}>Select</option>

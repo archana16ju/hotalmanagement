@@ -1,31 +1,29 @@
 'use client';
+
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function OrderPage() {
   const { id: tableId } = useParams();
-  const [orders, setOrders] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [order, setOrder] = useState<any>(null);
 
   useEffect(() => {
     fetch(`/api/order/${tableId}`)
       .then(res => res.json())
-      .then(data => setOrders(data.orders || []))
-      .finally(() => setLoading(false));
+      .then(setOrder);
   }, [tableId]);
 
-  if (loading) return <p style={{ textAlign: 'center', marginTop: 50 }}>Loading orders...</p>;
+  if (!order) return <p style={{ textAlign: 'center' }}>Loading order...</p>;
 
   return (
-    <div>
-      <h1 style={{ fontSize: '24px', marginBottom: '20px' }}>Orders for Table {tableId}</h1>
-      {orders.length === 0 && <p>No orders yet.</p>}
-      {orders.map((order, idx) => (
-        <div key={idx} className="order-item">
-          <p>{order.itemName}</p>
-          <p>Qty: {order.quantity}</p>
-        </div>
-      ))}
+    <div style={{ maxWidth: 600, margin: '0 auto' }}>
+      <h2>Order for Table {tableId}</h2>
+      <ul>
+        {order.items.map((item: any, i: number) => (
+          <li key={i}>{item.name} - ₹{item.price}</li>
+        ))}
+      </ul>
+      <p>Total: ₹{order.total}</p>
     </div>
   );
 }
