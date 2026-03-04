@@ -1,6 +1,6 @@
 'use client';
 
-import './style.css';
+//import 'style.css';
 import { ReactNode } from 'react';
 
 export default function Layout({ children }: { children: ReactNode }) {
