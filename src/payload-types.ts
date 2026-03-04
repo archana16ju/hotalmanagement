@@ -163,7 +163,7 @@ export interface User {
  */
 export interface Media {
   id: string;
-  alt: string;
+  altText?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -247,6 +247,11 @@ export interface Category {
   name: string;
   slug?: string | null;
   parent?: (string | null) | Category;
+  /**
+   * Upload a category image
+   */
+  image: string | Media;
+  description?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -323,6 +328,7 @@ export interface QrSetting {
 export interface Table {
   id: string;
   displayName: string;
+  slug: string;
   sections: {
     sectionTitle: string;
     tableCount: number;
@@ -513,7 +519,7 @@ export interface UsersSelect<T extends boolean = true> {
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
+  altText?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -557,6 +563,8 @@ export interface CategoriesSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   parent?: T;
+  image?: T;
+  description?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -621,6 +629,7 @@ export interface QrSettingsSelect<T extends boolean = true> {
  */
 export interface TablesSelect<T extends boolean = true> {
   displayName?: T;
+  slug?: T;
   sections?:
     | T
     | {
