@@ -4,7 +4,7 @@ import { withPayload } from '@payloadcms/next/withPayload'
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    esmExternals: true, 
+    esmExternals: true,
   },
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {
@@ -12,8 +12,15 @@ const nextConfig = {
       '.js': ['.ts', '.tsx', '.js', '.jsx'],
       '.mjs': ['.mts', '.mjs'],
     }
-
     return webpackConfig
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/admin/:path*',
+        destination: '/api/admin/:path*', 
+      },
+    ]
   },
 }
 
