@@ -4,6 +4,10 @@ export const Categories: CollectionConfig = {
   slug: 'categories',
   admin: {
     useAsTitle: 'name',
+    group: 'Products', // optional: group it under "Products" in admin
+  },
+  access: {
+    read: () => true, 
   },
   fields: [
     {
@@ -25,8 +29,8 @@ export const Categories: CollectionConfig = {
               return data.name
                 .toLowerCase()
                 .trim()
-                .replace(/\s+/g, '-')
-                .replace(/[^a-z0-9-]/g, '')
+                .replace(/\s+/g, '-') 
+                .replace(/[^a-z0-9-]/g, '') 
             }
           },
         ],
@@ -35,11 +39,25 @@ export const Categories: CollectionConfig = {
     {
       name: 'parent',
       type: 'relationship',
-      relationTo: 'categories',
+      relationTo: 'categories', 
       required: false,
       admin: {
         position: 'sidebar',
       },
+    },
+    {
+      name: 'image',
+      type: 'upload',
+      relationTo: 'media', 
+      required: true,
+      admin: {
+        description: 'Upload a category image',
+      },
+    },
+    {
+      name: 'description',
+      type: 'textarea',
+      required: false,
     },
   ],
 }
