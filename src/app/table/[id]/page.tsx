@@ -9,18 +9,15 @@ export default function QRPage() {
 
   return (
     <div className="app-container">
-      {/* Sidebar */}
+
       <div className="sidebar">
         <h2>Welcome</h2>
         <button>Login</button>
         <button>Cart</button>
-        <button>Orders</button>
-        <button>Profile</button>
       </div>
 
-      {/* Main content */}
       <div className="main-content">
-        {/* Topbar */}
+
         <div className="topbar">
           <div className="search-bar">
             <input
@@ -32,8 +29,6 @@ export default function QRPage() {
           </div>
           <div>Table ID: {tableId}</div>
         </div>
-
-        {/* Content */}
         <div>
           <h3>Search Results for "{search}"</h3>
           <p>You can render menu items or orders here based on search.</p>
