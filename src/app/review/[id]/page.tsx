@@ -1,24 +1,23 @@
-'use client';
-
-import { useParams } from 'next/navigation';
-import { useState } from 'react';
+'use client'
+import { useParams } from 'next/navigation'
+import { useState } from 'react'
 
 export default function ReviewPage() {
-  const { id: tableId } = useParams();
-  const [rating, setRating] = useState(0);
-  const [feedback, setFeedback] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  const { id: tableId } = useParams()
+  const [rating, setRating] = useState(0)
+  const [feedback, setFeedback] = useState('')
+  const [submitted, setSubmitted] = useState(false)
 
   const handleSubmit = async () => {
     await fetch(`/api/review/create`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ tableId, rating, feedback }),
-    });
-    setSubmitted(true);
-  };
+    })
+    setSubmitted(true)
+  }
 
-  if (submitted) return <p>Thank you for your feedback!</p>;
+  if (submitted) return <p>Thank you for your feedback!</p>
 
   return (
     <div className="p-6 max-w-xl mx-auto">
@@ -42,12 +41,9 @@ export default function ReviewPage() {
           className="w-full p-2 border rounded"
         />
       </div>
-      <button
-        className="bg-blue-500 text-white p-2 rounded"
-        onClick={handleSubmit}
-      >
+      <button className="bg-blue-500 text-white p-2 rounded" onClick={handleSubmit}>
         Submit
       </button>
     </div>
-  );
+  )
 }

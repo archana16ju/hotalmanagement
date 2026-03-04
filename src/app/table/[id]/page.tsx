@@ -20,11 +20,8 @@ export default function TableHubPage() {
   useEffect(() => {
     const fetchQRSettings = async () => {
       try {
-        // Use your Payload API endpoint here
-        const res = await fetch('https://hotalmanagement-hjy7.vercel.app/api/qr-settings')
+        const res = await fetch(`${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/qr-settings`)
         const data = await res.json()
-
-        // Assuming first document is your active QR settings
         setQRSettings(data?.docs?.[0] || null)
       } catch (error) {
         console.error('Failed to fetch QR settings:', error)

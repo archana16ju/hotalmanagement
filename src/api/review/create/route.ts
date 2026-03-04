@@ -8,13 +8,9 @@ export async function POST(req: Request) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.PAYLOAD_SECRET}`
+      Authorization: `Bearer ${process.env.PAYLOAD_SECRET}`,
     },
-    body: JSON.stringify({
-      table: tableId,
-      rating,
-      feedback
-    })
+    body: JSON.stringify({ table: tableId, rating, feedback }),
   })
 
   const data = await res.json()
