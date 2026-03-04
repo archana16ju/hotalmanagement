@@ -20,7 +20,7 @@ export default function TableHubPage() {
   useEffect(() => {
     const fetchQRSettings = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/qr-settings`)
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/qr-settings`)
         const data = await res.json()
         setQRSettings(data?.docs?.[0] || null)
       } catch (error) {

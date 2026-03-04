@@ -4,7 +4,7 @@ export async function POST(req: Request) {
   const body = await req.json()
   const { tableId, rating, feedback } = body
 
-  const res = await fetch(`${process.env.PAYLOAD_URL}/api/reviews`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/reviews`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
