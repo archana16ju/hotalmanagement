@@ -17,28 +17,11 @@ export default function TablePage() {
   if (!table) return <p>Loading table info...</p>;
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Welcome to Table {table.name}</h1>
-      <div className="flex flex-col gap-4">
-        <button
-          className="bg-blue-500 text-white p-2 rounded"
-          onClick={() => router.push(`/order/${tableId}`)}
-        >
-          Order
-        </button>
-        <button
-          className="bg-green-500 text-white p-2 rounded"
-          onClick={() => router.push(`/payment/${tableId}`)}
-        >
-          Payment
-        </button>
-        <button
-          className="bg-yellow-500 text-black p-2 rounded"
-          onClick={() => router.push(`/review/${tableId}`)}
-        >
-          Review
-        </button>
-      </div>
+    <div>
+      <h1>Welcome to Table {tableId}</h1>
+      <button onClick={() => router.push(`/order/${tableId}`)}>Order</button>
+      <button onClick={() => router.push(`/payment/${tableId}`)}>Payment</button>
+      <button onClick={() => router.push(`/review/${tableId}`)}>Review</button>
     </div>
   );
 }

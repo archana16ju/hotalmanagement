@@ -32,6 +32,7 @@ const QRLazyGenerator = () => {
       return
     }
 
+    // Ensure baseurl ends with '/'
     const baseurl = rawBaseurl.trim().endsWith('/')
       ? rawBaseurl.trim()
       : rawBaseurl.trim() + '/'
@@ -64,7 +65,8 @@ const QRLazyGenerator = () => {
             sectionName.toLowerCase().trim().replace(/\s+/g, '-') +
             `-table-${i}`
 
-          const tableURL = `${baseurl}table/${slug}`
+          // 🔹 ALWAYS point to table hub
+          const tableURL = `${baseurl}${slug}`
 
           const tableQR = await QRCode.toDataURL(tableURL, {
             width: size,
