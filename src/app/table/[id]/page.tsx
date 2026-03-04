@@ -1,52 +1,44 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-interface TablePageProps {
-  params: { id: string }
-}
+export default function TablePage() {
+  const { id: tableId } = useParams();
+  const router = useRouter();
+  const [table, setTable] = useState<any>(null);
 
-export default function TablePage({ params }: TablePageProps) {
-  const { id } = params
+  useEffect(() => {
+    fetch(`/api/tables/${tableId}`)
+      .then(res => res.json())
+      .then(setTable);
+  }, [tableId]);
+
+  if (!table) return <p>Loading table info...</p>;
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      background: '#f4f4f4',
-      padding: 20
-    }}>
-     <h1 style={{ marginBottom: 10 }}>WELCOME UPDATED</h1>
-      <h2 style={{ marginBottom: 30 }}>{id}</h2>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 15, width: 250 }}>
-        
-        <Link href={`/order/${id}`}>
-          <button style={buttonStyle}>Order Food</button>
-        </Link>
-
-        <Link href={`/payment/${id}`}>
-          <button style={buttonStyle}>Make Payment</button>
-        </Link>
-
-        <Link href={`/review/${id}`}>
-          <button style={buttonStyle}>Leave Review</button>
-        </Link>
-
+    <div className="p-6 max-w-xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Welcome to Table {table.name}</h1>
+      <div className="flex flex-col gap-4">
+        <button
+          className="bg-blue-500 text-white p-2 rounded"
+          onClick={() => router.push(`/order/${tableId}`)}
+        >
+          Order
+        </button>
+        <button
+          className="bg-green-500 text-white p-2 rounded"
+          onClick={() => router.push(`/payment/${tableId}`)}
+        >
+          Payment
+        </button>
+        <button
+          className="bg-yellow-500 text-black p-2 rounded"
+          onClick={() => router.push(`/review/${tableId}`)}
+        >
+          Review
+        </button>
       </div>
     </div>
-  )
-}
-
-const buttonStyle: React.CSSProperties = {
-  padding: '12px',
-  fontSize: '16px',
-  backgroundColor: '#000',
-  color: '#fff',
-  border: 'none',
-  borderRadius: '6px',
-  cursor: 'pointer'
+  );
 }
