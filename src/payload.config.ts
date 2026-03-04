@@ -5,6 +5,7 @@ import { buildConfig } from 'payload';
 import { fileURLToPath } from 'url';
 import sharp from 'sharp';
 
+
 import { Users } from './collections/Users';
 import { Media } from './collections/Media';
 import Orders from './collections/Order';
@@ -20,13 +21,20 @@ import PaymentGateways from './collections/PaymentGateways';
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
+if (!process.env.PAYLOAD_SECRET) {
+  throw new Error('PAYLOAD_SECRET environment variable is missing!');
+}
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL environment variable is missing!');
+}
+
 export default buildConfig({
   admin: {
-  user: Users.slug,
-  importMap: {
-    baseDir: path.resolve(dirname),
+    user: Users.slug,
+    importMap: {
+      baseDir: path.resolve(dirname),
+    },
   },
-},
   collections: [
     Users,
     Media,
@@ -41,12 +49,12 @@ export default buildConfig({
     PaymentGateways,
   ],
   editor: lexicalEditor(),
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret: process.env.PAYLOAD_SECRET!, 
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   db: mongooseAdapter({
-    url: process.env.DATABASE_URL || '',
+    url: process.env.DATABASE_URL!, 
   }),
   sharp,
   plugins: [],
