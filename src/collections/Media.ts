@@ -1,16 +1,22 @@
-import type { CollectionConfig } from 'payload'
+import { CollectionConfig } from 'payload';
 
 export const Media: CollectionConfig = {
   slug: 'media',
-  access: {
-    read: () => true,
+  admin: {
+    useAsTitle: 'filename',
+    group: 'Media',
+  },
+  upload: {
+    staticDir: 'media',        
+    mimeTypes: ['image/*'],   
   },
   fields: [
     {
-      name: 'alt',
+      name: 'altText',
       type: 'text',
-      required: true,
+      required: false,
     },
   ],
-  upload: true,
-}
+};
+
+export default Media;
