@@ -1,15 +1,21 @@
-
 'use client';
-import { useParams, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 
-export default function QRRedirectPage() {
-  const { id: tableId } = useParams();
-  const router = useRouter();
+import { useEffect, useState } from 'react';
+
+export default function TableList() {
+  const [tables, setTables] = useState([]);
 
   useEffect(() => {
-    router.replace(`/table/${tableId}`);
-  }, [router, tableId]);
+    fetch('/api/collections/tables')
+      .then((res) => res.json())
+      .then((data) => setTables(data.docs || []));
+  }, []);
 
-  return <p>Redirecting to Table {tableId}...</p>;
+  return (
+    <ul>
+      {tables.map((table: any) => (
+        <li key={table.id}>{table.name}</li>  
+      ))}
+    </ul>
+  );
 }
