@@ -2,8 +2,13 @@
 
 import { useEffect, useState } from 'react';
 
+interface Table {
+  id: string;
+  name: string;
+}
+
 export default function TableList() {
-  const [tables, setTables] = useState([]);
+  const [tables, setTables] = useState<Table[]>([]);
 
   useEffect(() => {
     fetch('/api/collections/tables')
@@ -13,8 +18,8 @@ export default function TableList() {
 
   return (
     <ul>
-      {tables.map((table: any) => (
-        <li key={table.id}>{table.name}</li>  
+      {tables.map((table) => (
+        <li key={table.id}>{table.name}</li>
       ))}
     </ul>
   );
