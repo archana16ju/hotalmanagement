@@ -17,6 +17,7 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
+    "target": "ES2022",
     "plugins": [
       {
         "name": "next"
@@ -29,8 +30,7 @@
       "@payload-config": [
         "./src/payload.config.ts"
       ]
-    },
-    "target": "ES2022"
+    }
   },
   "include": [
     "next-env.d.ts",
@@ -41,6 +41,8 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "tests",
+    ".next"
   ]
 }
